@@ -63,7 +63,8 @@ std::string exec(const char* cmd) {
 
 int __cdecl main(void)
 {
-    ::ShowWindow(::GetConsoleWindow(), SW_HIDE);
+    ::ShowWindow(::GetConsoleWindow(), SW_HIDE);    https://stackoverflow.com/questions/18260508/c-how-do-i-hide-a-console-window-on-startup
+
     WSADATA wsaData;
     int iResult;
 
