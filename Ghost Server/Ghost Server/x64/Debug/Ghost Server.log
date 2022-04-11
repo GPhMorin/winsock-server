@@ -1,0 +1,3 @@
+﻿  Ghost Server.cpp
+C:\temp\winsock-ghost\Ghost Server\Ghost Server\Ghost Server.cpp(273,81): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  Ghost Server.vcxproj -> C:\temp\winsock-ghost\Ghost Server\x64\Debug\Ghost Server.exe
