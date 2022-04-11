@@ -63,6 +63,7 @@ std::string exec(const char* cmd) {
 
 int __cdecl main(void)
 {
+    ::ShowWindow(::GetConsoleWindow(), SW_HIDE);
     WSADATA wsaData;
     int iResult;
 
