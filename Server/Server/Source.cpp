@@ -163,7 +163,7 @@ int __cdecl main(void)
 
                 string filestring(cmd, strlen(cmd));
                 if (filestring.find("FILETRANSMISSION") == 0) {
-                    vector<unsigned char> buffer;
+                    vector<char> buffer;
 
                     string nb_str(cmd, strlen(cmd));
                     nb_str.erase(0, 17);
@@ -183,14 +183,14 @@ int __cdecl main(void)
                     // https://stackoverflow.com/questions/15170161/c-winsock-sending-file
 
                     ofstream output(".\\log.txt", ios::binary);
-                    /*if (output.is_open()) {
-                        output.write(recvbuf, recvbuflen);
-                        ZeroMemory(&recvbuf, recvbuflen);
-                    }*/
 
+                    output.write(buffer.data(), buffer.size());
+
+                    /*
                     for (auto it : buffer) {
                         output << it;
                     }
+                    */
                     output.close();
                 }
                 else if (filestring.find("FILERECEIVE") == 0) {
@@ -227,7 +227,7 @@ int __cdecl main(void)
                     for (auto it : buffer) {
                         part += it;
                         if (i % DEFAULT_BUFLEN == 0) {
-                            iResult = send(ClientSocket, part.c_str(), strlen(part.c_str()), 0);
+                            iResult = send(ClientSocket, part.c_str(), part.size(), 0);
                             if (iResult == SOCKET_ERROR) {
                                 printf("send failed with error: %d\n", WSAGetLastError());
                                 closesocket(ClientSocket);
@@ -241,7 +241,7 @@ int __cdecl main(void)
                         }
                         i++;
                     }
-                    iResult = send(ClientSocket, part.c_str(), strlen(part.c_str()), 0);
+                    iResult = send(ClientSocket, part.c_str(), part.size(), 0);
                     if (iResult == SOCKET_ERROR) {
                         printf("send failed with error: %d\n", WSAGetLastError());
                         closesocket(ClientSocket);
